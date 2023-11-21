@@ -1,4 +1,4 @@
- import { createContext, useContext, useMemo, useState } from "react";
+ import { createContext, useMemo, useState, useCallback } from "react";
  import {createTheme} from '@mui/material/styles'
 
 //   color design token
@@ -204,17 +204,15 @@ export const  ColorModeContext = createContext({
 });
 
 export const useMode = () => {
-    const [mode, SetMode] = useState('dark');
-   const colorMode = useMemo(
-    ()=>({
-   toggleColorMode: () =>
-
-   SetMode((prev)=>(prev === "light" ? 'dark' : 'light'))
-   }),
-   []
-   );
+    const [mode, setMode] = useState('dark');
   
-    const theme =  useMemo(()=>createTheme(themeSettings(mode),[mode]));
-     return[theme, colorMode];
-    }
-
+    const toggleColorMode = useCallback(() => {
+      setMode((prev) => (prev === 'light' ? 'dark' : 'light'));
+    }, [setMode]);
+  
+    const colorMode = useMemo(() => ({ toggleColorMode }), [toggleColorMode]);
+  
+    const theme = useMemo(() => createTheme(themeSettings(mode), [mode]));
+    return [theme, colorMode];
+  };
+  
